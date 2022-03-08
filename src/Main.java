@@ -1,6 +1,5 @@
 import astar.*;
 import puzzle.Puzzle;
-
 import java.util.List;
 
 public class Main {
@@ -20,6 +19,4 @@ public class Main {
             System.out.println(node);
         }
     }
-
-
 }
