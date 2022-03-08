@@ -1,0 +1,7 @@
+
+m
+java:S1206-"PThis class overrides "equals()" and should therefore also override "hashCode()".(óŞÇì8àÙ´¨ö/
+<
+java:S2097-"Add a type test to this method.(óŞÇì8ƒÚ´¨ö/
+`
+java:S2259/"CA "NullPointerException" could be thrown; "other" is nullable here.(ÍšĞµ8ÃÚ´¨ö/
