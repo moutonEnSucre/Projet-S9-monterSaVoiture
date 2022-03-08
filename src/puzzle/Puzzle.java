@@ -65,25 +65,6 @@ public class Puzzle {
                     System.out.println(pos);
                 }
             }
-
-           /* Astar aStar = new Astar(rows, cols, initialNode, finalNode);
-            List<Position> positionList = new ArrayList<>();
-            for(Agent notCurrentAgent : agents) {
-                if(notCurrentAgent != agent) {
-                    positionList.add(notCurrentAgent.currentPosition);
-                }
-            }
-
-            int[][] blocksArray = new int[positionList.size()][2];
-            for(int i = 0; i < positionList.size(); i++){
-                blocksArray[i][0] = positionList.get(i).x;
-                blocksArray[i][1] = positionList.get(i).y;
-            }
-            //aStar.setBlocks(blocksArray);
-            List<Node> path = aStar.findPath();
-            for (Node node : path) {
-                System.out.println(node);
-            }*/
         }
 
 

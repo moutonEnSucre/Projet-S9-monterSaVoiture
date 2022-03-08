@@ -1,110 +1,53 @@
 package astar;
 
-public class Node {
+import utils.Position;
 
-    private int g;
-    private int f;
-    private int h;
-    private int row;
-    private int col;
-    private boolean isBlock;
-    private Node parent;
+import java.util.ArrayList;
+import java.util.List;
 
-    public Node(int row, int col) {
-        super();
-        this.row = row;
-        this.col = col;
+public class Node implements Comparable<Node> {
+
+    private final int id;
+    private static int lastId = 0;
+    private final Position pos;
+
+    public final List<Node> neighbors = new ArrayList<>();
+    public double heuristic = 0;
+    public Node parent = null;
+
+    public Node(Position position) {
+        this.id = lastId++;
+        this.pos = position;
     }
 
-    public void calculateHeuristic(Node finalNode) {
-        this.h = Math.abs(finalNode.getRow() - getRow()) + Math.abs(finalNode.getCol() - getCol());
+    public int getId() {
+        return id;
     }
 
-    public void setNodeData(Node currentNode, int cost) {
-        int gCost = currentNode.getG() + cost;
-        setParent(currentNode);
-        setG(gCost);
-        calculateFinalCost();
+    public Position getPos() {
+        return pos;
     }
 
-    public boolean checkBetterPath(Node currentNode, int cost) {
-        int gCost = currentNode.getG() + cost;
-        if (gCost < getG()) {
-            setNodeData(currentNode, cost);
-            return true;
-        }
-        return false;
-    }
-
-    private void calculateFinalCost() {
-        int finalCost = getG() + getH();
-        setF(finalCost);
+    public double calculateHeuristic(Position target) {
+        return Position.distance(pos.x, pos.y, target.x, target.y);
     }
 
     @Override
-    public boolean equals(Object arg0) {
-        Node other = (Node) arg0;
-        return this.getRow() == other.getRow() && this.getCol() == other.getCol();
+    public int compareTo(Node node) {
+        return Double.compare(this.heuristic, node.heuristic);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj == null || getClass() != obj.getClass()) return false;
+        if(this == obj) return true;
+
+        Node other = (Node) obj;
+        return pos.x == other.getPos().x && pos.y == other.getPos().y;
     }
 
     @Override
     public String toString() {
-        return "astar.Node [row=" + row + ", col=" + col + "]";
-    }
-
-    public int getH() {
-        return h;
-    }
-
-    public void setH(int h) {
-        this.h = h;
-    }
-
-    public int getG() {
-        return g;
-    }
-
-    public void setG(int g) {
-        this.g = g;
-    }
-
-    public int getF() {
-        return f;
-    }
-
-    public void setF(int f) {
-        this.f = f;
-    }
-
-    public Node getParent() {
-        return parent;
-    }
-
-    public void setParent(Node parent) {
-        this.parent = parent;
-    }
-
-    public boolean isBlock() {
-        return isBlock;
-    }
-
-    public void setBlock(boolean isBlock) {
-        this.isBlock = isBlock;
-    }
-
-    public int getRow() {
-        return row;
-    }
-
-    public void setRow(int row) {
-        this.row = row;
-    }
-
-    public int getCol() {
-        return col;
-    }
-
-    public void setCol(int col) {
-        this.col = col;
+        return "(" + pos.x + ";" + pos.y + ")";
     }
 }
