@@ -15,8 +15,8 @@ public class Agent {
         this.id = agent_last_id++;
     }
 
-    public boolean rightPosition(){
-        return currentPosition == targetPos;
+    public boolean rightPosition() {
+        return currentPosition.equals(targetPos);
     }
 
     @Override

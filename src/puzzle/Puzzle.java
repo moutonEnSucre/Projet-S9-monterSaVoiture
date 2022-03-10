@@ -2,7 +2,6 @@ package puzzle;
 
 import astar.Astar;
 import astar.Graph;
-import astar.Node;
 import utils.Position;
 import java.util.*;
 
@@ -47,25 +46,41 @@ public class Puzzle {
 
     public void goToRightPosition(){
         Agent agent = getAgentWithSmallestIdAndWithBadCurrentPosition();
-            HashSet<Position> agentListWithoutCurrentAgent = new HashSet<>();
-            for(Agent notCurrentAgent : agents) {
-                if(notCurrentAgent != agent) {
-                    agentListWithoutCurrentAgent.add(notCurrentAgent.currentPosition);
-                }
-            }
-
-            Graph graphWithAgent = new Graph(new Position(puzzle.length, puzzle.length), "WithAgent", agentListWithoutCurrentAgent);
-
-            Astar.getInstance().addGraph(graphWithAgent);
-
-
-            List<Position> path = graphWithAgent.getPath(agent.currentPosition, agent.targetPos);
-            if(path != null) {
-                for(Position pos : path) {
-                    System.out.println(pos);
-                }
+        HashSet<Position> agentListWithoutCurrentAgent = new HashSet<>();
+        for(Agent notCurrentAgent : agents) {
+            if(notCurrentAgent != agent) {
+                agentListWithoutCurrentAgent.add(notCurrentAgent.currentPosition);
             }
         }
+
+        Graph graphWithAgent = new Graph(new Position(puzzle.length, puzzle.length), "WithAgent", agentListWithoutCurrentAgent);
+        Graph graphWithoutAgent = new Graph(new Position(puzzle.length, puzzle.length), "WithoutAgent", new HashSet<>());
+
+        Astar.getInstance().addGraph(graphWithAgent);
+        Astar.getInstance().addGraph(graphWithoutAgent);
+
+        List<Position> path = graphWithAgent.getPath(agent.currentPosition, agent.targetPos);
+        if(path != null) {
+            for(Position pos : path) {
+                System.out.println(pos);
+            }
+            
+            if(!path.isEmpty()) {
+                Position nextPos = path.get(path.size() - 1);
+                moveAgent(agent, nextPos);
+            }
+        }
+        else {
+            path = graphWithoutAgent.getPath(agent.currentPosition, agent.targetPos);
+            //regarder qui block
+        }
+    }
+
+    public void moveAgent(Agent agentToMove, Position nextPosition){
+        puzzle[agentToMove.currentPosition.x][agentToMove.currentPosition.y] = null;
+        agentToMove.currentPosition = nextPosition;
+        puzzle[agentToMove.currentPosition.x][agentToMove.currentPosition.y] = agentToMove;
+    }
 
 
     @Override
