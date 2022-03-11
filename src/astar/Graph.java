@@ -11,11 +11,9 @@ import java.util.PriorityQueue;
 public class Graph {
     private final Map<Position, Node> graph = new HashMap<>();
     private final Position size;
-    private final String name;
 
-    public Graph(Position size, String name, HashSet<Position> walls) {
+    public Graph(Position size, HashSet<Position> walls) {
         this.size = size;
-        this.name = name;
 
         //graph build
         for(int i = 0; i < this.size.x; i++) {
@@ -101,9 +99,6 @@ public class Graph {
     public String toString() {
         StringBuilder value = new StringBuilder();
 
-        //inverted
-        value.append("<").append(this.name).append(">\n");
-
         //graph display
         for(int i = 0; i < this.size.x; i++) {
             for(int j = 0; j < this.size.y; j++) {
@@ -121,9 +116,5 @@ public class Graph {
         }
 
         return value.toString();
-    }
-
-    public String getName() {
-        return name;
     }
 }
