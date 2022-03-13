@@ -1,29 +1,36 @@
-package puzzle;
+package sma.agent;
 
 import utils.Position;
 
 import java.util.Objects;
 
-public class Agent {
-    private static int agent_last_id = 0;
-    public int id;
+public class PieceAgent extends Agent {
 
-    public Position targetPos;
-    public Position currentPosition;
+    @Override
+    protected void onBeforeMove() {
 
-    public Agent() {
-        this.id = agent_last_id++;
+    }
+
+    @Override
+    protected void onAfterMove() {
+
+    }
+
+    @Override
+    protected void onRemove() {
+
     }
 
     public boolean rightPosition() {
-        return currentPosition.equals(targetPos);
+        return false;
+//        return currentPosition.equals(targetPos);
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Agent agent = (Agent) o;
+        PieceAgent agent = (PieceAgent) o;
         return id == agent.id;
     }
 
