@@ -1,24 +1,44 @@
 package sma.agent;
 
 import sma.behavior.Behavior;
+import sma.behavior.NeedToMove;
 import sma.perception.Perception;
+import sma.world.World;
 
 import java.util.Stack;
 
 public abstract class Agent {
     private static int last_id = 0;
     public final int id;
-    protected Perception perception;
+    public Perception perception;
 
     protected Stack<Behavior> behaviorList = new Stack<>();
+    private String lastMessage = "";
 
     public Agent() {
         this.id = last_id++;
     }
 
+    public void sendMessage(Agent agentToContact, String message) {
+        agentToContact.onMessageReceived(this, message);
+    }
+
+    public void onMessageReceived(Agent agentWhoContactMe, String message) {
+        System.out.println("Message: " + message + " received, id: " + id + " from: " + agentWhoContactMe.id);
+        if(message.equals("MOVE")) {
+            addBehavior(new NeedToMove(perception, agentWhoContactMe.id));
+        }
+        lastMessage = message;
+    }
+
     public void onInit(Perception perception) {
         System.out.println("Agent " + id + " initialisé.");
         this.perception = perception;
+    }
+
+    public void addBehavior(Behavior behavior) {
+        behaviorList.remove(behavior);
+        behaviorList.add(behavior);
     }
 
     public void update() {

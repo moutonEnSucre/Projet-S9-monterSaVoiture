@@ -12,8 +12,8 @@ public class Graph {
     private final Map<Position, Node> graph = new HashMap<>();
     private final Position size;
 
-    public Graph(Position size, HashSet<Position> walls) {
-        this.size = size;
+    public Graph(int size, HashSet<Position> walls) {
+        this.size = new Position(size, size);
 
         //graph build
         for(int i = 0; i < this.size.x; i++) {

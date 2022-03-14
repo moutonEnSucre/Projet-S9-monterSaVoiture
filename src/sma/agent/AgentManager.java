@@ -12,7 +12,7 @@ import java.util.Scanner;
 public class AgentManager {
     private final List<PieceAgent> agents = new ArrayList<>();
     public boolean isAtRightPlace = false;
-    private World world;
+    private final World world;
 
     public AgentManager(int nbAgent, World world) {
         this.world = world;
@@ -23,7 +23,7 @@ public class AgentManager {
         for(PieceAgent a : agents) {
             Position initPos =  world.setCase(a);
             Position targetPos = world.getTargetPositionFromIdAgent(a.id);
-            Perception perception = new Perception(world, initPos, targetPos);
+            Perception perception = new Perception(world, a, initPos, targetPos);
 
             a.behaviorList.add(new GoToTargetPosition(perception));
             a.onInit(perception);
@@ -33,20 +33,36 @@ public class AgentManager {
     public void update() {
         while(!isAtRightPlace) {
             isAtRightPlace = true;
+
             for(Agent a : agents) {
                 if (!a.perception.isAtRightPlace()) {
+                    System.out.println(a.id);
+                    System.out.println(a.behaviorList);
+
                     a.update();
+
+                    System.out.println(world);
+                    System.out.println("");
+
                     if (!a.perception.isAtRightPlace())
                         isAtRightPlace = false;
                 }
             }
-            System.out.println(world);
-            System.out.println("");
-            try {
+            /*System.out.println(world);
+            System.out.println("");*/
+            /*try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
-            }
+            }*/
         }
+    }
+
+    public PieceAgent getAgentWithSmallestIdAndWithBadCurrentPosition() {
+        for(PieceAgent agent : agents){
+            if(!agent.rightPosition())
+                return agent;
+        }
+        return null;
     }
 }
