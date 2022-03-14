@@ -20,15 +20,9 @@ public class GoToTargetPosition implements Behavior {
     @Override
     public boolean done() {
         if(perception.isAtRightPlace()) {
-            /*for(Agent agent : perception.world.getAgents()) {
-                if(agent.id != perception.parent.id) {
-                    agent.reset();
-                }
-
-            }*/
             Agent next = getAgentWithSmallestIdAndWithBadCurrentPosition();
             if(next != null) {
-                next.addBehavior(new GoToTargetPosition(next.perception));
+                perception.parent.sendMessage(next, "GOTO");
             }
             return true;
         }

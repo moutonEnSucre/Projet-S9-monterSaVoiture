@@ -1,6 +1,7 @@
 package sma.agent;
 
 import sma.behavior.Behavior;
+import sma.behavior.GoToTargetPosition;
 import sma.behavior.NeedToMove;
 import sma.perception.Perception;
 import sma.world.World;
@@ -27,6 +28,9 @@ public abstract class Agent {
         if(message.equals("MOVE")) {
             addBehavior(new NeedToMove(perception, agentWhoContactMe.id));
         }
+        else if(message.equals("GOTO")) {
+            addBehavior(new GoToTargetPosition(perception));
+        }
     }
 
     public void onInit(Perception perception) {
@@ -48,10 +52,6 @@ public abstract class Agent {
             }
             onAfterMove();
         }
-    }
-
-    public void reset() {
-        behaviorList.clear();
     }
 
     protected abstract void onBeforeMove();
