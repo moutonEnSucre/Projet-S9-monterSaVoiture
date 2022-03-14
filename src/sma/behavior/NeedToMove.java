@@ -5,7 +5,9 @@ import sma.perception.Perception;
 import utils.Position;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Random;
 
 public class NeedToMove implements Behavior {
     private final Perception perception;
@@ -23,6 +25,12 @@ public class NeedToMove implements Behavior {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        return o instanceof NeedToMove;
+    }
+
+    @Override
     public boolean done() {
         return isDone;
     }
@@ -33,11 +41,12 @@ public class NeedToMove implements Behavior {
         if(!validPositions.isEmpty()) {
             Position nextPos = validPositions.get(0);
             perception.world.moveAgent(perception.parent, nextPos);
-            isDone = true;
         }
         else {
             contactValidNeighborToMove();
         }
+
+        isDone = true;
     }
 
     private void contactValidNeighborToMove() {
@@ -52,15 +61,79 @@ public class NeedToMove implements Behavior {
 
         Position currentPos = perception.currentPos;
 
+        List<Agent> neightborToMove = new ArrayList<>();
+
         for(Position o : offset) {
             Position testPos = new Position(currentPos.x + o.x, currentPos.y + o.y);
             if(testPos.x >= 0 && testPos.x < perception.world.size && testPos.y >= 0 && testPos.y < perception.world.size) {
+
                 Agent agentCaseTested = perception.world.getAgent(testPos);
-                if(agentCaseTested != null && agentCaseTested.id != agentIdWhoContactMe) {
-                    perception.parent.sendMessage(agentCaseTested, "MOVE");
+                if(agentCaseTested != null && agentCaseTested.id != agentIdWhoContactMe && !agentCaseTested.perception.isAtRightPlace()){// && !agentCaseTested.perception.isAtRightPlace()) {
+                    neightborToMove.add(agentCaseTested);
                 }
             }
         }
+
+        if(neightborToMove.isEmpty()) {
+            for(Position o : offset) {
+                Position testPos = new Position(currentPos.x + o.x, currentPos.y + o.y);
+                if(testPos.x >= 0 && testPos.x < perception.world.size && testPos.y >= 0 && testPos.y < perception.world.size) {
+
+                    Agent agentCaseTested = perception.world.getAgent(testPos);
+                    if(agentCaseTested != null && agentCaseTested.id != agentIdWhoContactMe){// && !agentCaseTested.perception.isAtRightPlace()) {
+                        neightborToMove.add(agentCaseTested);
+                    }
+                }
+            }
+
+            if(!neightborToMove.isEmpty()) {
+/*                Agent value = neightborToMove.stream().min(Comparator.comparingInt(x -> x.id)).get();
+                perception.parent.sendMessage(value, "MOVE");*/
+               /* perception.parent.sendMessage(neightborToMove.get(new Random().nextInt(neightborToMove.size())), "MOVE");*/
+                for(Agent a : neightborToMove) {
+                    perception.parent.sendMessage(a, "MOVE");
+                }
+            }
+        }
+        else {
+            for(Agent a : neightborToMove) {
+                perception.parent.sendMessage(a, "MOVE");
+            }
+        }
+
+/*        if(neightborToMove.isEmpty()) {
+            for(Position o : offset) {
+                Position testPos = new Position(currentPos.x + o.x, currentPos.y + o.y);
+                if(testPos.x >= 0 && testPos.x < perception.world.size && testPos.y >= 0 && testPos.y < perception.world.size) {
+                    Agent agentCaseTested = perception.world.getAgent(testPos);
+                    if(agentCaseTested != null && agentCaseTested.id != agentIdWhoContactMe) {
+                        neightborToMove.add(agentCaseTested);
+
+                    }
+                }
+            }
+            if(!neightborToMove.isEmpty()) {
+                Agent value = neightborToMove.stream().min(Comparator.comparingInt(x -> x.id)).get();
+                System.out.println("Agent fixed to move: " + value.id + " cause: " + perception.parent.id);
+                perception.parent.sendMessage(value, "MOVE");
+            }
+        }*/
+/*        else {
+            for(Agent a : neightborToMove) {
+                perception.parent.sendMessage(a, "MOVE");
+            }
+        }*/
+
+/*        if(!neightborToMove.isEmpty()) {
+            Agent value = neightborToMove.stream().max(Comparator.comparingInt(x -> x.id)).get();
+            perception.parent.sendMessage(value, "MOVE");
+        }*/
+/*        for(Agent a : neightborToMove) {
+
+        }*/
+/*        if(!neightborToMove.isEmpty()) {
+            perception.parent.sendMessage(neightborToMove.get(new Random().nextInt(neightborToMove.size())), "MOVE");
+        }*/
     }
 
     private List<Position> getValidPosition() {

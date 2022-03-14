@@ -8,6 +8,7 @@ import utils.Position;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 
 public class GoToTargetPosition implements Behavior {
     private final Perception perception;
@@ -18,13 +19,36 @@ public class GoToTargetPosition implements Behavior {
 
     @Override
     public boolean done() {
-        return perception.isAtRightPlace();
-        //return false;
+        if(perception.isAtRightPlace()) {
+            /*for(Agent agent : perception.world.getAgents()) {
+                if(agent.id != perception.parent.id) {
+                    agent.reset();
+                }
+
+            }*/
+            Agent next = getAgentWithSmallestIdAndWithBadCurrentPosition();
+            if(next != null) {
+                next.addBehavior(new GoToTargetPosition(next.perception));
+            }
+            return true;
+        }
+        return false;
     }
 
     @Override
     public String toString() {
         return "GoToTargetPosition: " + perception.targetPos.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        return o instanceof GoToTargetPosition;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(perception);
     }
 
     @Override
@@ -44,6 +68,7 @@ public class GoToTargetPosition implements Behavior {
         //Construction des graphs
         Graph graphWithAgent = new Graph(size, agents);
         Graph graphWithFixedAgent = new Graph(size, agentsWithGoodPlace);
+        Graph emptyGraph = new Graph(size, new HashSet<>());
 
         //Chemin avec agent
         List<Position> path = graphWithFixedAgent.getPath(perception.currentPos, perception.targetPos);
@@ -58,39 +83,13 @@ public class GoToTargetPosition implements Behavior {
                 perception.parent.sendMessage(checkCaseAgent, "MOVE");
             }
         }
+    }
 
-        /*else {
-            //Chemin avec uniquement les agents terminés
-            path = graphWithFixedAgent.getPath(perception.currentPos, perception.targetPos);
-
-            for(int i = path.size() - 1; i > 0; i--) {
-
-            }
-
-            for(PieceAgent a : agents){
-                for (Position pathPos : path){
-                    if (a.currentPosition.equals(pathPos)){
-                        System.out.println("Il faut bouger :) => " + a.id);
-
-                        Stack<PieceAgent> moving_agents = new Stack<>();
-                        moving_agents.push(a);
-
-                        List<Position> validPositions = getValidPosition(a, path);
-
-                        if(validPositions.isEmpty()) {
-                            PieceAgent agentToMove = getAgentToMove(a, path);
-                            if(agentToMove != null) {
-                                System.out.println("Agent to move: " + agentToMove.id);
-                            }
-                        }
-                        else {
-                            this.moveAgent(a, validPositions.get(0));
-                        }
-
-                    }
-                }
-            }
-        }*/
-
+    public Agent getAgentWithSmallestIdAndWithBadCurrentPosition() {
+        for(Agent agent : perception.world.getAgents()){
+            if(!agent.perception.isAtRightPlace())
+                return agent;
+        }
+        return null;
     }
 }

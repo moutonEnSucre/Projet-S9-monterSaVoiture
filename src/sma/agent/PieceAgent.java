@@ -18,11 +18,6 @@ public class PieceAgent extends Agent {
 
     }
 
-    public boolean rightPosition() {
-        return false;
-//        return currentPosition.equals(targetPos);
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

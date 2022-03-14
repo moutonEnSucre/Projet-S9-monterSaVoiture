@@ -7,11 +7,10 @@ import utils.Position;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 public class AgentManager {
     private final List<PieceAgent> agents = new ArrayList<>();
-    public boolean isAtRightPlace = false;
+    public boolean isDone = false;
     private final World world;
 
     public AgentManager(int nbAgent, World world) {
@@ -24,43 +23,44 @@ public class AgentManager {
             Position initPos =  world.setCase(a);
             Position targetPos = world.getTargetPositionFromIdAgent(a.id);
             Perception perception = new Perception(world, a, initPos, targetPos);
-
-            a.behaviorList.add(new GoToTargetPosition(perception));
             a.onInit(perception);
+        }
+
+        Agent nextAgentToMove = getAgentWithSmallestIdAndWithBadCurrentPosition();
+        if(nextAgentToMove != null)
+        {
+            nextAgentToMove.behaviorList.clear();
+            nextAgentToMove.addBehavior(new GoToTargetPosition(nextAgentToMove.perception));
         }
     }
 
     public void update() {
-        while(!isAtRightPlace) {
-            isAtRightPlace = true;
+        while(!isDone) {
+            isDone = true;
 
             for(Agent a : agents) {
-                if (!a.perception.isAtRightPlace()) {
-                    System.out.println(a.id);
-                    System.out.println(a.behaviorList);
+                //System.out.println(a.id);
+                //System.out.println(a.behaviorList);
 
-                    a.update();
+                a.update();
 
-                    System.out.println(world);
-                    System.out.println("");
+                if (!a.perception.isAtRightPlace())
+                    isDone = false;
 
-                    if (!a.perception.isAtRightPlace())
-                        isAtRightPlace = false;
-                }
             }
-            /*System.out.println(world);
-            System.out.println("");*/
-            /*try {
-                Thread.sleep(1000);
+            System.out.println(world);
+            System.out.println("");
+            try {
+                Thread.sleep(200);
             } catch (InterruptedException e) {
                 e.printStackTrace();
-            }*/
+            }
         }
     }
 
     public PieceAgent getAgentWithSmallestIdAndWithBadCurrentPosition() {
         for(PieceAgent agent : agents){
-            if(!agent.rightPosition())
+            if(!agent.perception.isAtRightPlace())
                 return agent;
         }
         return null;

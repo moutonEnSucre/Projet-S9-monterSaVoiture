@@ -13,7 +13,6 @@ public abstract class Agent {
     public Perception perception;
 
     protected Stack<Behavior> behaviorList = new Stack<>();
-    private String lastMessage = "";
 
     public Agent() {
         this.id = last_id++;
@@ -28,7 +27,6 @@ public abstract class Agent {
         if(message.equals("MOVE")) {
             addBehavior(new NeedToMove(perception, agentWhoContactMe.id));
         }
-        lastMessage = message;
     }
 
     public void onInit(Perception perception) {
@@ -50,6 +48,10 @@ public abstract class Agent {
             }
             onAfterMove();
         }
+    }
+
+    public void reset() {
+        behaviorList.clear();
     }
 
     protected abstract void onBeforeMove();
