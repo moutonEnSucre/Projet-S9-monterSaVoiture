@@ -1,20 +1,21 @@
 package sma.world;
 
+import sma.agent.Agent;
 import sma.agent.PieceAgent;
 import astar.Graph;
+import sma.perception.Perception;
 import utils.Position;
 import java.util.*;
 
 public class World {
 
-    private final PieceAgent[][] puzzle;
-    private final int size;
+    public final Agent[][] puzzle;
+    public final int size;
 
-    private final List<PieceAgent> agents = new ArrayList<>();
     private final List<Position> positions = new ArrayList<>();
 
-    public World(float percentageAgent, int tab_size) {
-        this.size = tab_size;
+    public World(int size) {
+        this.size = size;
         this.puzzle = new PieceAgent[size][size];
 
         for(int i=0; i < puzzle.length; i++){
@@ -22,28 +23,24 @@ public class World {
                 positions.add(new Position(i, j));
             }
         }
-
-        if(percentageAgent > 1) percentageAgent = 1;
-        if(percentageAgent < 0) percentageAgent = 0;
-        for(int i = 0; i < (tab_size * tab_size) * percentageAgent; i++) {
-            setCase(new PieceAgent(), tab_size);
-        }
     }
 
-    private void setCase(PieceAgent agent, int size) {
+    public Position getTargetPositionFromIdAgent(int id) {
+        return positions.get(id);
+    }
+
+    public Position setCase(PieceAgent agent) {
         int x = new Random().nextInt(size);
         int y = new Random().nextInt(size);
         while(puzzle[x][y] != null) {
             x = new Random().nextInt(size);
             y = new Random().nextInt(size);
         }
-        agent.targetPos = positions.get(agent.id);
-        agent.currentPosition = new Position(x, y);
-
         puzzle[x][y] = agent;
-        agents.add(agent);
-    }
 
+        return new Position(x, y);
+    }
+/*
     public PieceAgent getAgentWithSmallestIdAndWithBadCurrentPosition() {
         for(PieceAgent agent : agents){
             if(!agent.rightPosition())
@@ -171,7 +168,7 @@ public class World {
         puzzle[agentToMove.currentPosition.x][agentToMove.currentPosition.y] = null;
         agentToMove.currentPosition = nextPosition;
         puzzle[agentToMove.currentPosition.x][agentToMove.currentPosition.y] = agentToMove;
-    }
+    }*/
 
 
     @Override

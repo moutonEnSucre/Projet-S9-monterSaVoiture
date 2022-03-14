@@ -1,12 +1,14 @@
 package sma.agent;
 
 import sma.behavior.Behavior;
+import sma.perception.Perception;
 
 import java.util.Stack;
 
 public abstract class Agent {
     private static int last_id = 0;
     public final int id;
+    protected Perception perception;
 
     protected Stack<Behavior> behaviorList = new Stack<>();
 
@@ -14,17 +16,20 @@ public abstract class Agent {
         this.id = last_id++;
     }
 
-    public void onInit() {
+    public void onInit(Perception perception) {
         System.out.println("Agent " + id + " initialisé.");
+        this.perception = perception;
     }
 
-    public void Update() {
-        onBeforeMove();
-        behaviorList.peek().action();
-        if(behaviorList.peek().done()) {
-            behaviorList.pop();
+    public void update() {
+        if(!behaviorList.isEmpty()){
+            onBeforeMove();
+            behaviorList.peek().action();
+            if(behaviorList.peek().done()) {
+                behaviorList.pop();
+            }
+            onAfterMove();
         }
-        onAfterMove();
     }
 
     protected abstract void onBeforeMove();

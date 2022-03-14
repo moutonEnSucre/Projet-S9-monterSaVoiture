@@ -1,11 +1,8 @@
 package sma.agent;
 
-import utils.Position;
-
 import java.util.Objects;
 
 public class PieceAgent extends Agent {
-
     @Override
     protected void onBeforeMove() {
 

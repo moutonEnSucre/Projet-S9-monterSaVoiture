@@ -1,17 +1,11 @@
+import sma.agent.AgentManager;
 import sma.world.World;
 
 public class Main {
 
     public static void main(String[] args) {
-        World puzzle = new World(0.5f, 5);
-
-        for(int i = 0; i < 20; i++) {
-            System.out.println(puzzle);
-            puzzle.update();
-        }
-
-        System.out.println("<===== END =====>");
-        System.out.println(puzzle);
-
+        World world = new World(5);
+        AgentManager agentManager = new AgentManager(5, world);
+        agentManager.update();
     }
 }
