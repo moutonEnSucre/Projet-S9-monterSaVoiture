@@ -1,14 +1,12 @@
 package sma.behavior;
 
-import utils.Position;
+import sma.perception.Perception;
 
 public class GoToTargetPosition implements Behavior {
-    public Position currentPos;
-    public Position targetPos;
+    private Perception perception;
 
-    public void setup(Position currentPos, Position targetPos) {
-        this.currentPos = currentPos;
-        this.targetPos = targetPos;
+    public GoToTargetPosition(Perception perception) {
+        this.perception = perception;
     }
 
     @Override

@@ -1,5 +1,6 @@
 package sma.agent;
 
+import sma.behavior.GoToTargetPosition;
 import sma.perception.Perception;
 import sma.world.World;
 import utils.Position;
@@ -21,7 +22,11 @@ public class AgentManager {
 
         for(PieceAgent a : agents) {
             Position initPos =  world.setCase(a);
-            a.onInit(new Perception(world, initPos, world.getTargetPositionFromIdAgent(a.id)));
+            Position targetPos = world.getTargetPositionFromIdAgent(a.id);
+            Perception perception = new Perception(world, initPos, targetPos);
+
+            a.behaviorList.add(new GoToTargetPosition(perception));
+            a.onInit(perception);
         }
     }
 
@@ -37,6 +42,11 @@ public class AgentManager {
             }
             System.out.println(world);
             System.out.println("");
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 }
