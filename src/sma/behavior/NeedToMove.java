@@ -11,11 +11,11 @@ import java.util.Random;
 
 public class NeedToMove implements Behavior {
     private final Perception perception;
-    private final int agentIdWhoContactMe;
+    private final Agent agentWhoContactMe;
     private boolean isDone = false;
 
-    public NeedToMove(Perception perception, int agentIdWhoContactMe) {
-        this.agentIdWhoContactMe = agentIdWhoContactMe;
+    public NeedToMove(Perception perception, Agent agentWhoContactMe) {
+        this.agentWhoContactMe = agentWhoContactMe;
         this.perception = perception;
     }
 
@@ -63,24 +63,27 @@ public class NeedToMove implements Behavior {
 
         List<Agent> neightborToMove = new ArrayList<>();
 
+        //On récupère les voisins qui ne sont pas ceux qui nous ont contactés et qui ne sont pas à leur place
         for(Position o : offset) {
             Position testPos = new Position(currentPos.x + o.x, currentPos.y + o.y);
             if(testPos.x >= 0 && testPos.x < perception.world.size && testPos.y >= 0 && testPos.y < perception.world.size) {
 
                 Agent agentCaseTested = perception.world.getAgent(testPos);
-                if(agentCaseTested != null && agentCaseTested.id != agentIdWhoContactMe && !agentCaseTested.perception.isAtRightPlace()){// && !agentCaseTested.perception.isAtRightPlace()) {
+                if(agentCaseTested != null && agentCaseTested != agentWhoContactMe && !agentCaseTested.perception.isAtRightPlace()){// && !agentCaseTested.perception.isAtRightPlace()) {
                     neightborToMove.add(agentCaseTested);
                 }
             }
         }
 
         if(neightborToMove.isEmpty()) {
+           /* perception.parent.sendMessage(agentWhoContactMe, "MOVE");*/
+
             for(Position o : offset) {
                 Position testPos = new Position(currentPos.x + o.x, currentPos.y + o.y);
                 if(testPos.x >= 0 && testPos.x < perception.world.size && testPos.y >= 0 && testPos.y < perception.world.size) {
 
                     Agent agentCaseTested = perception.world.getAgent(testPos);
-                    if(agentCaseTested != null && agentCaseTested.id != agentIdWhoContactMe){// && !agentCaseTested.perception.isAtRightPlace()) {
+                    if(agentCaseTested != null && agentCaseTested != agentWhoContactMe) {// && !agentCaseTested.perception.isAtRightPlace()) {
                         neightborToMove.add(agentCaseTested);
                     }
                 }
@@ -89,7 +92,9 @@ public class NeedToMove implements Behavior {
             if(!neightborToMove.isEmpty()) {
 /*                Agent value = neightborToMove.stream().min(Comparator.comparingInt(x -> x.id)).get();
                 perception.parent.sendMessage(value, "MOVE");*/
+
                 perception.parent.sendMessage(neightborToMove.get(new Random().nextInt(neightborToMove.size())), "MOVE");
+
 /*                for(Agent a : neightborToMove) {
                     perception.parent.sendMessage(a, "MOVE");
                 }*/

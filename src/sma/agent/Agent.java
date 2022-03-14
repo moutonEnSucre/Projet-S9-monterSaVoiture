@@ -5,7 +5,9 @@ import sma.behavior.GoToTargetPosition;
 import sma.behavior.NeedToMove;
 import sma.perception.Perception;
 import sma.world.World;
+import utils.Position;
 
+import java.util.Objects;
 import java.util.Stack;
 
 public abstract class Agent {
@@ -26,7 +28,7 @@ public abstract class Agent {
     public void onMessageReceived(Agent agentWhoContactMe, String message) {
         System.out.println("Message: " + message + " received, id: " + id + " from: " + agentWhoContactMe.id);
         if(message.equals("MOVE")) {
-            addBehavior(new NeedToMove(perception, agentWhoContactMe.id));
+            addBehavior(new NeedToMove(perception, agentWhoContactMe));
         }
         else if(message.equals("GOTO")) {
             addBehavior(new GoToTargetPosition(perception));
@@ -57,4 +59,17 @@ public abstract class Agent {
     protected abstract void onBeforeMove();
     protected abstract void onAfterMove();
     protected abstract void onRemove();
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Agent agent = (Agent) o;
+        return id == agent.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }
