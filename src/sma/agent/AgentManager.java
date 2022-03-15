@@ -37,7 +37,7 @@ public class AgentManager {
     public void update() {
         while(!isDone) {
             isDone = true;
-
+            //Mettre à jour de tout les agents
             for(Agent a : agents) {
                 //System.out.println(a.id);
                 //System.out.println(a.behaviorList);

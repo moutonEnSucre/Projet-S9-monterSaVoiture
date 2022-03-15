@@ -13,6 +13,8 @@ public class World {
     private final List<Agent> agents = new ArrayList<>();
     private final List<Position> positions = new ArrayList<>();
 
+    public Random random;
+
     public World(int size) {
         this.size = size;
         //Création du puzzle
@@ -24,6 +26,9 @@ public class World {
                 positions.add(new Position(i, j));
             }
         }
+
+        long seed = 260;
+        random = new Random(seed);
     }
 
     public List<Agent> getAgents() {
@@ -36,12 +41,12 @@ public class World {
 
     //Permet d'assigner aléatoirement un agent à une case
     public Position setCase(PieceAgent agent) {
-        int x = new Random().nextInt(size);
-        int y = new Random().nextInt(size);
+        int x = random.nextInt(size);
+        int y = random.nextInt(size);
 
         while(puzzle[x][y] != null) {
-            x = new Random().nextInt(size);
-            y = new Random().nextInt(size);
+            x = random.nextInt(size);
+            y = random.nextInt(size);
         }
         puzzle[x][y] = agent;
         agents.add(agent);

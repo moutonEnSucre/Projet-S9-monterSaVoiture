@@ -5,6 +5,7 @@ import utils.Position;
 import java.util.ArrayList;
 import java.util.List;
 
+//Noeux du graph
 public class Node implements Comparable<Node> {
 
     private final int id;

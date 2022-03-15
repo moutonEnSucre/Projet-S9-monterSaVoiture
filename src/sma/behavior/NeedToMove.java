@@ -5,10 +5,10 @@ import sma.perception.Perception;
 import utils.Position;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
 
+//Comportement obligeant l'agent à devoir se déplacer
 public class NeedToMove implements Behavior {
     private final Perception perception;
     private final Agent agentWhoContactMe;
@@ -37,12 +37,15 @@ public class NeedToMove implements Behavior {
 
     @Override
     public void action() {
+        //On essaye de trouver une case valide autour de l'agent
         List<Position> validPositions = getValidPosition();
         if(!validPositions.isEmpty()) {
+            //Si on la trouve, on se déplace
             Position nextPos = validPositions.get(0);
             perception.world.moveAgent(perception.parent, nextPos);
         }
         else {
+            //Sinon on demande à nos voisins de se déplacer
             contactValidNeighborToMove();
         }
 
@@ -63,7 +66,7 @@ public class NeedToMove implements Behavior {
 
         List<Agent> neightborToMove = new ArrayList<>();
 
-        //On récupère les voisins qui ne sont pas ceux qui nous ont contactés et qui ne sont pas à leur place
+        //On récupère les voisins qui ne sont pas ceux qui nous ont contactés et qui ne sont pas à leur place finale
         for(Position o : offset) {
             Position testPos = new Position(currentPos.x + o.x, currentPos.y + o.y);
             if(testPos.x >= 0 && testPos.x < perception.world.size && testPos.y >= 0 && testPos.y < perception.world.size) {
@@ -75,6 +78,8 @@ public class NeedToMove implements Behavior {
             }
         }
 
+        //Si on n'en trouve pas, on refzit la procédure mais nous pouvons désormais contacter les agents qui sont sur
+        //leur position finale
         if(neightborToMove.isEmpty()) {
            /* perception.parent.sendMessage(agentWhoContactMe, "MOVE");*/
 
@@ -89,18 +94,13 @@ public class NeedToMove implements Behavior {
                 }
             }
 
+            //On contact l'un de nos voisin afin de lui demander de bouger
             if(!neightborToMove.isEmpty()) {
-/*                Agent value = neightborToMove.stream().min(Comparator.comparingInt(x -> x.id)).get();
-                perception.parent.sendMessage(value, "MOVE");*/
-
                 perception.parent.sendMessage(neightborToMove.get(new Random().nextInt(neightborToMove.size())), "MOVE");
-
-/*                for(Agent a : neightborToMove) {
-                    perception.parent.sendMessage(a, "MOVE");
-                }*/
             }
         }
         else {
+            //On demande à nos voisin de se déplacer
             for(Agent a : neightborToMove) {
                 perception.parent.sendMessage(a, "MOVE");
             }

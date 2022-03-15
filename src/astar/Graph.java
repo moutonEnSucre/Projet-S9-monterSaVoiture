@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
 
+//Graph nous permettant d'appliquer A*
 public class Graph {
     private final Map<Position, Node> graph = new HashMap<>();
     private final Position size;
