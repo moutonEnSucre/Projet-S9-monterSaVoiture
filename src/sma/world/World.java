@@ -27,6 +27,7 @@ public class World {
             }
         }
 
+        //tapis <Ne pas toucher>
         long seed = 260;
         random = new Random(seed);
     }
