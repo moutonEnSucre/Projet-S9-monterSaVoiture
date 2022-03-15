@@ -15,8 +15,10 @@ public class World {
 
     public World(int size) {
         this.size = size;
+        //Création du puzzle
         this.puzzle = new PieceAgent[size][size];
 
+        //On récupère toutes les positions du puzzle
         for(int i=0; i < puzzle.length; i++){
             for(int j=0; j < puzzle[i].length; j++){
                 positions.add(new Position(i, j));
@@ -32,6 +34,7 @@ public class World {
         return positions.get(id);
     }
 
+    //Permet d'assigner aléatoirement un agent à une case
     public Position setCase(PieceAgent agent) {
         int x = new Random().nextInt(size);
         int y = new Random().nextInt(size);
@@ -49,138 +52,13 @@ public class World {
         return this.puzzle[pos.x][pos.y];
     }
 
+    //Permet de déplacer un agent dans le puzzle
     public void moveAgent(Agent agentToMove, Position nextPos){
         Position currentPos = agentToMove.perception.currentPos;
         puzzle[currentPos.x][currentPos.y] = null;
         puzzle[nextPos.x][nextPos.y] = agentToMove;
         agentToMove.perception.currentPos = nextPos;
     }
-
-
-/*
-    public PieceAgent getAgentWithSmallestIdAndWithBadCurrentPosition() {
-        for(PieceAgent agent : agents){
-            if(!agent.rightPosition())
-                return agent;
-        }
-        return null;
-    }
-
-    public void update() {
-        //On récupère l'agent qui a le plus petit id
-        PieceAgent agent = getAgentWithSmallestIdAndWithBadCurrentPosition();
-
-        HashSet<Position> agentListWithoutCurrentAgent = new HashSet<>();
-        HashSet<Position> agentWithGoodPlaceListWithoutCurrentAgent = new HashSet<>();
-
-        for(PieceAgent notCurrentAgent : agents) {
-            if(notCurrentAgent != agent) {
-                agentListWithoutCurrentAgent.add(notCurrentAgent.currentPosition);
-                if(notCurrentAgent.rightPosition()) {
-                    agentWithGoodPlaceListWithoutCurrentAgent.add(notCurrentAgent.currentPosition);
-                }
-            }
-        }
-
-        //Construction des graphs
-        Graph graphWithAgent = new Graph(new Position(size, size), agentListWithoutCurrentAgent);
-        Graph graphWithFixedAgent = new Graph(new Position(size, size), agentWithGoodPlaceListWithoutCurrentAgent);
-
-        //Chemin avec agent
-        List<Position> path = graphWithAgent.getPath(agent.currentPosition, agent.targetPos);
-        if(path != null) {
-            if(!path.isEmpty()) {
-                Position nextPos = path.get(path.size() - 1);
-                moveAgent(agent, nextPos);
-            }
-        }
-        else {
-            //Chemin avec uniquement les agents terminés
-            path = graphWithFixedAgent.getPath(agent.currentPosition, agent.targetPos);
-
-            for(int i = path.size() - 1; i > 0; i--) {
-
-            }
-
-            for(PieceAgent a : agents){
-                for (Position pathPos : path){
-                    if (a.currentPosition.equals(pathPos)){
-                       System.out.println("Il faut bouger :) => " + a.id);
-
-                       Stack<PieceAgent> moving_agents = new Stack<>();
-                       moving_agents.push(a);
-
-                       List<Position> validPositions = getValidPosition(a, path);
-
-                       if(validPositions.isEmpty()) {
-                            PieceAgent agentToMove = getAgentToMove(a, path);
-                            if(agentToMove != null) {
-                                System.out.println("Agent to move: " + agentToMove.id);
-                            }
-                       }
-                       else {
-                           this.moveAgent(a, validPositions.get(0));
-                       }
-
-                    }
-                }
-            }
-        }
-    }
-
-    private PieceAgent getAgentToMove(PieceAgent agent, List<Position> path){
-        List<Position> offset = new ArrayList<>() {
-            {
-                add(new Position(-1, 0));
-                add(new Position(1, 0));
-                add(new Position(0, -1));
-                add(new Position(0, 1));
-            }
-        };
-        for(Position o : offset) {
-            Position testPos = new Position(agent.currentPosition.x + o.x, agent.currentPosition.y + o.y);
-            if(testPos.x >= 0 && testPos.x < puzzle.length && testPos.y >= 0 && testPos.y < puzzle.length) {
-                PieceAgent caseTested = puzzle[testPos.x][testPos.y];
-                if(caseTested != null && !caseTested.rightPosition()) {
-                    return caseTested;
-                }
-            }
-        }
-        return null;
-    }
-
-    //Get valid position
-    private List<Position> getValidPosition(PieceAgent agent, List<Position> path) {
-        List<Position> validPosition = new ArrayList<>();
-
-        List<Position> offset = new ArrayList<>() {
-            {
-                add(new Position(-1, 0));
-                add(new Position(1, 0));
-                add(new Position(0, -1));
-                add(new Position(0, 1));
-            }
-        };
-
-        for(Position o : offset) {
-            Position testPos = new Position(agent.currentPosition.x + o.x, agent.currentPosition.y + o.y);
-            if(testPos.x >= 0 && testPos.x < puzzle.length && testPos.y >= 0 && testPos.y < puzzle.length) {
-                PieceAgent caseTested = puzzle[testPos.x][testPos.y];
-                if(caseTested == null && isNotInAgentPath(testPos, path)) {
-                    validPosition.add(testPos);
-                }
-            }
-        }
-        return validPosition;
-    }
-
-    private boolean isNotInAgentPath(Position position, List<Position> path) {
-        for(Position pos : path) {
-            if(position.equals(pos)) return false;
-        }
-        return true;
-    }*/
-
 
     @Override
     public String toString() {

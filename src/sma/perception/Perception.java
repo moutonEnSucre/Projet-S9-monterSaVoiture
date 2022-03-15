@@ -4,6 +4,8 @@ import sma.agent.Agent;
 import sma.world.World;
 import utils.Position;
 
+//Cette place permet à un agent d'avoir conscience du monde dans lequel il se trouve
+//ainsi que la notion de position
 public class Perception {
     public Agent parent;
     public World world;
