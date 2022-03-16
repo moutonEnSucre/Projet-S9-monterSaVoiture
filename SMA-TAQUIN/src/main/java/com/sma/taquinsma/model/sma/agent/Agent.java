@@ -13,7 +13,7 @@ public abstract class Agent {
     public final int id;
     public Perception perception;
 
-    protected Stack<Behavior> behaviorList = new Stack<>();
+    public Stack<Behavior> behaviorList = new Stack<>();
 
     public Agent() {
         this.id = last_id++;

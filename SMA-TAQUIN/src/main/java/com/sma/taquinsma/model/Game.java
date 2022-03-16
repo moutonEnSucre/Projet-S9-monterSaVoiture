@@ -1,5 +1,7 @@
-package com.sma.taquinsma.model.sma.agent;
+package com.sma.taquinsma.model;
 
+import com.sma.taquinsma.model.sma.agent.Agent;
+import com.sma.taquinsma.model.sma.agent.PieceAgent;
 import com.sma.taquinsma.model.sma.behavior.GoToTargetPosition;
 import com.sma.taquinsma.model.sma.perception.Perception;
 import com.sma.taquinsma.model.sma.world.World;
@@ -7,13 +9,25 @@ import com.sma.taquinsma.model.utils.Position;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Observable;
 
-public class AgentManager {
+public class Game extends Observable implements Runnable {
+    private final Thread th;
+    private boolean isRunning;
+
     private final List<PieceAgent> agents = new ArrayList<>();
     public boolean isDone = false;
     private final World world;
 
-    public AgentManager(int nbAgent, World world) {
+    public World getWorld() {
+        return world;
+    }
+
+    public List<PieceAgent> getAgents() {
+        return this.agents;
+    }
+
+    public Game(int nbAgent, World world) {
         this.world = world;
         for(int i = 0; i < nbAgent; i++) {
             agents.add(new PieceAgent());
@@ -32,11 +46,15 @@ public class AgentManager {
             nextAgentToMove.behaviorList.clear();
             nextAgentToMove.addBehavior(new GoToTargetPosition(nextAgentToMove.perception));
         }
+
+        this.th = new Thread(this);
+        this.th.setDaemon(true);
     }
 
-    public void update() {
 
-        while(!isDone) {
+    @Override
+    public void run() {
+        while(!isDone && isRunning) {
             isDone = true;
             //Mettre à jour de tout les agents
             for(Agent a : agents) {
@@ -51,12 +69,28 @@ public class AgentManager {
             }
             System.out.println(world);
             System.out.println("");
+
+            setChanged();
+            notifyObservers(); // notification de l'observer
+
             try {
-                Thread.sleep(200);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+                Thread.sleep(500); // pause
+            } catch (InterruptedException ex) {
+                System.out.println(ex.toString());
             }
         }
+    }
+
+    public void start() {
+        System.out.println("Game started");
+        this.th.start();
+        this.isRunning = true;
+    }
+
+    public void stop() {
+        System.out.println("Game stoped");
+        this.th.stop();
+        this.isRunning = false;
     }
 
     public PieceAgent getAgentWithSmallestIdAndWithBadCurrentPosition() {
