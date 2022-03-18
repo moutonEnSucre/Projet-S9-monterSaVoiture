@@ -84,12 +84,14 @@ public class HelloApplication extends Application implements Observer {
                 for(Agent a : game.getAgents()) {
                     int n = rand.nextInt(4);
                     Text text = new Text(Integer.toString(a.id));
+                    text.setScaleX(2);
+                    text.setScaleY(2);
                     text.setFill(Color.WHITE);
 
                     Rectangle agent = new Rectangle();
                     agent.setWidth(sceneWidth / game.getWorld().size);
                     agent.setHeight(sceneHeight / game.getWorld().size);
-                    agent.setFill(Color.RED);
+                    agent.setFill(Color.BLUE);
 
                     StackPane stack = new StackPane();
                     stack.getChildren().addAll(agent, text);
